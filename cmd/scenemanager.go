@@ -1,7 +1,7 @@
 package main
 
 type SceneManager struct {
-    objects *[]*Planet
+    objects *[]*Body
 }
 
 func (sm* SceneManager) Render() {

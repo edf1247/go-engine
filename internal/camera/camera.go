@@ -13,7 +13,7 @@ const (
 )
 
 func InitCamera() rl.Camera3D{
-    cameraPos := rl.Vector3{0, 10, 150}
+    cameraPos := rl.Vector3{0, 10, 10}
     cameraTarget := rl.Vector3{0, 0, 0}
     rotation := rl.Vector3{0, 1, 0}
     fov := float32(90.0)

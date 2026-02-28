@@ -5,13 +5,9 @@ import (
     rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-const WIDTH = 800
-const HEIGHT = 450
+const WIDTH = 1920
+const HEIGHT = 1080
 
-var (
-    centerPos = rl.Vector3{0, 0, 0}
-    initialAcceleration = rl.Vector3{0, 0, 0}
-)
 
 func main() {
   rl.InitWindow(WIDTH, HEIGHT, "Go Engine")
@@ -20,7 +16,7 @@ func main() {
   var start = false
   var mainCamera rl.Camera3D
   var sm SceneManager
-  var sceneObjects []*Planet
+  var sceneObjects []*Body
   var counter = 0
 
   rl.SetTargetFPS(60.0)
@@ -34,21 +30,19 @@ func main() {
     if !start {
         mainCamera = camera.InitCamera()
 
-        radius := float32(100.0)
-        rings := int32(15)
-        slices := int32(15)
+        radius := float32(10.0)
         mass := float32(1.0)
-        
-        sun := Planet{centerPos, radius, rings, slices, mass, rl.White, rl.Maroon, initialAcceleration}
-        earth := Planet{rl.Vector3{100.0, 0.0, 100.0}, float32(.9157), rings, slices, float32(0.000003), rl.Red, rl.White, initialAcceleration}
-        
-        sceneObjects = append(sceneObjects, &sun)
-        sceneObjects = append(sceneObjects, &earth)
 
+        sun := CreatePlanet(rl.Vector3{0, 0, 0}, radius, float32(100.0), rl.RayWhite, "Sun")
+        planet := CreatePlanet(rl.Vector3{40, 0, 0}, float32(1.0), mass, rl.Blue, "Planet")
+
+        sceneObjects = append(sceneObjects, &sun)
+        sceneObjects = append(sceneObjects, &planet)
         sm.objects = &sceneObjects
 
         start = true
     }
+
     rl.UpdateCamera(&mainCamera, rl.CameraFree)
     
     rl.BeginMode3D(mainCamera)
@@ -56,10 +50,9 @@ func main() {
     //camera.MoveCamera(&mainCamera)
     
     sm.Render()
-    
-    if (counter % 10 == 0) {
-        UniversalGravitation(sm.objects)
-    }
+
+    UniversalGravitation(&sm)
+    UpdatePositions(&sm)
 
     rl.DrawGrid(10.0, 1.0)
     rl.EndMode3D()

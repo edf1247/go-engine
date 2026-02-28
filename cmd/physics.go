@@ -5,56 +5,67 @@ import (
     "math"
 )
 
-type Planet struct {
+type RigidBody struct {
+    mass float32
+    initialVelocity rl.Vector3
+    currentVelocity rl.Vector3
     centerPos rl.Vector3
+}
+
+type Mesh struct {
     radius float32
     rings int32
     slices int32
-    mass float32
     color rl.Color
     wireColor rl.Color
-    accelerationVector rl.Vector3
+}
+
+type Body struct {
+    mesh Mesh
+    rb RigidBody
+    tag string
 }
 
 const (
     G = math.Pi * math.Pi * 4
-    SIM_SPEED = 100
+    VELOCITY = 10
+    rings = 15
+    slices = 15
 )
 
-func (planet* Planet) Render() {
-    rl.DrawSphereEx(planet.centerPos, planet.radius, planet.rings, planet.slices, planet.color)
-    rl.DrawSphereWires(planet.centerPos, planet.radius, planet.rings, planet.slices, planet.wireColor)
+var (
+    initialVelocity = rl.Vector3{0, 0, 0}
+    wireColor = rl.Red
+)
+
+func (planet* Body) Render() {
+    rl.DrawSphereEx(planet.rb.centerPos, planet.mesh.radius, planet.mesh.rings, planet.mesh.slices, planet.mesh.color)
+    rl.DrawSphereWires(planet.rb.centerPos, planet.mesh.radius, planet.mesh.rings, planet.mesh.slices, planet.mesh.wireColor)
 }
 
-func UniversalGravitation(objects *[]*Planet) {
-    for i := 0; i < len(*objects); i++ {
-        netForce := rl.Vector3{0, 0, 0}
-        m1 := (*objects)[i]
-        for j := 0; j < len(*objects); j++ {
-            if i == j {
-                continue
+func CreatePlanet(centerPos rl.Vector3, radius float32, mass float32, color rl.Color, tag string) (Body) {
+    temp := Body{Mesh{radius, rings, slices, color, wireColor}, RigidBody{mass, initialVelocity, initialVelocity, centerPos}, tag}
+    return temp
+}
+
+func UniversalGravitation(sm *SceneManager) {
+    delta := rl.GetFrameTime()
+    for _, curBody := range *sm.objects {
+        for _, otherBody := range *sm.objects {
+            if curBody != otherBody {
+                distance := rl.Vector3DistanceSqr(curBody.rb.centerPos, otherBody.rb.centerPos)
+                forceDirection := rl.Vector3Normalize(rl.Vector3Subtract(otherBody.rb.centerPos, curBody.rb.centerPos))
+                force := rl.Vector3Scale(forceDirection, G * curBody.rb.mass * otherBody.rb.mass / distance)
+                acceleration := rl.Vector3Scale(force, 1 / curBody.rb.mass)
+                curBody.rb.currentVelocity = rl.Vector3Add(curBody.rb.currentVelocity, rl.Vector3Scale(acceleration, delta)) 
             }
-            
-            m2 := (*objects)[j]
-            
-            dx := float64(m2.centerPos.X - m1.centerPos.X)
-            dz := float64(m2.centerPos.Z - m1.centerPos.Z)
-            
-            distSq := (dx * dx) + (dz * dz)
-            dist := math.Sqrt((dx * dx) + (dz * dz))
-            
-            force := float64(G * m1.mass * m2.mass) / distSq
-            
-            netForce.X += float32((force * dx) / dist)
-            netForce.Z += float32((force * dz) / dist)
-
         }
-        m1.accelerationVector.X += netForce.X / m1.mass
-        m1.accelerationVector.Z += netForce.Z / m1.mass
-        
+    }
+}
 
-        m1.centerPos.X += SIM_SPEED * m1.accelerationVector.X * rl.GetFrameTime()
-        m1.centerPos.Z += SIM_SPEED * m1.accelerationVector.Z * rl.GetFrameTime()
-
+func UpdatePositions(sm *SceneManager) {
+    delta := rl.GetFrameTime()
+    for _, curBody := range *sm.objects {
+        curBody.rb.centerPos = rl.Vector3Add(curBody.rb.centerPos, rl.Vector3Scale(curBody.rb.currentVelocity, delta))
     }
 }
