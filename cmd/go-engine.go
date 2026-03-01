@@ -32,8 +32,8 @@ func main() {
         radius := float32(10.0)
         mass := float32(1.0)
 
-        sun := CreatePlanet(rl.Vector3{0, 0, 0}, radius, float32(100.0), rl.RayWhite, "Sun")
-        planet := CreatePlanet(rl.Vector3{40, 0, 0}, float32(1.0), mass, rl.Blue, "Planet")
+        sun := CreatePlanet(rl.Vector3{0, 0, 0}, radius, float32(100.0), rl.RayWhite, "Sun", rl.Vector3{0, 0, 0})
+        planet := CreatePlanet(rl.Vector3{40, 0, 0}, float32(1.0), mass, rl.Blue, "Planet", rl.Vector3{0, 10, 0})
 
         sceneObjects = append(sceneObjects, &sun)
         sceneObjects = append(sceneObjects, &planet)

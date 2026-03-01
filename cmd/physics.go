@@ -34,7 +34,6 @@ const (
 )
 
 var (
-    initialVelocity = rl.Vector3{0, 0, 0}
     wireColor = rl.Red
 )
 
@@ -43,7 +42,7 @@ func (planet* Body) Render() {
     rl.DrawSphereWires(planet.rb.centerPos, planet.mesh.radius, planet.mesh.rings, planet.mesh.slices, planet.mesh.wireColor)
 }
 
-func CreatePlanet(centerPos rl.Vector3, radius float32, mass float32, color rl.Color, tag string) (Body) {
+func CreatePlanet(centerPos rl.Vector3, radius float32, mass float32, color rl.Color, tag string, initialVelocity rl.Vector3) (Body) {
     temp := Body{Mesh{radius, rings, slices, color, wireColor}, RigidBody{mass, initialVelocity, initialVelocity, centerPos}, tag}
     return temp
 }
