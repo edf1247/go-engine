@@ -32,4 +32,4 @@ UniversalGravitation:
 
 ## Credits
 
-This implementation is inspired by Sebastion Lague's Solar System (video)[https://www.youtube.com/watch?v=7axImc1sxa0&t=50s&pp=ygUcc2ViYXN0aWFuIGxhZ3VlIHNvbGFyIHN5c3RlbQ%3D%3D]. The main differences are that I'm working in Go, without the abstractions of the Unity API. 
+This implementation is inspired by Sebastion Lague's Solar System [video](https://www.youtube.com/watch?v=7axImc1sxa0&t=50s&pp=ygUcc2ViYXN0aWFuIGxhZ3VlIHNvbGFyIHN5c3RlbQ%3D%3D). The main differences are that I'm working in Go, without the abstractions of the Unity API. 
