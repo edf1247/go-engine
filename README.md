@@ -1,5 +1,7 @@
 ## Solar System Simulation
 
+https://github.com/user-attachments/assets/5f58e291-f37a-4cf7-8729-0cd7336e7cc1
+
 ## Usage
 
 1. Make sure you have Go installed
